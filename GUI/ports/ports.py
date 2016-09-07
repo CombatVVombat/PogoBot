@@ -1,18 +1,15 @@
 import serial.tools.list_ports
 
-def refreshPorts():
+def refreshPortList():
     portList = []
     portInfoList = serial.tools.list_ports.comports()
-    
     for portInfo in portInfoList:
         portList.append(portInfo[0])
     return portList
 
-    
-    
-
-"""def togglePort():
-    if portOpen.get() == 0:
+def togglePort():
+    # If port is closed, try to open it
+    """if portOpen.get() == 0:
         ser.close()
         portOpenBox['text'] = "Port Closed"
         baudBox.state(['!disabled'])
@@ -32,9 +29,9 @@ def refreshPorts():
             portOpen.set(0)
             portOpenBox['text'] = "Port Closed"
             baudBox.state(['!disabled'])
-            portCombo.state(['!disabled'])
+            portCombo.state(['!disabled'])"""
 
-def readFromPort():
+"""def readFromPort():
     bytesRead = 0
     global rawByteStream
     if portOpen.get() == 1:

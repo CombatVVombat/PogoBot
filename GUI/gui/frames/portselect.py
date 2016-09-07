@@ -36,7 +36,15 @@ class PortSelectFrame(tk.Frame):
         for n, entry in enumerate(self.portConfigEntrys):
             entry.grid(row=n, column=1)
 
+    def disablePortConfig(self):
+        for child in self.portSettingsFrame.children.values():
+            child.configure(state='disable')
 
+    def enablePortConfig(self):
+        for child in self.portSettingsFrame.children.values():
+            child.configure(state='enable')
 
+    def updatePortList(self, portList):
+        self.portComboBox['values'] = portList
 
 
