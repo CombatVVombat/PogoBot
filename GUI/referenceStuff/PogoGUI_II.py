@@ -1,5 +1,5 @@
 from Serial.ports import *
-from GUI.gui import *
+from GUI.guimain import *
 from GUI.buildGUI import *
 from GUI.canvas import *
 from matplotlib.figure import Figure

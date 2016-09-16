@@ -1,20 +1,24 @@
-from gui import *
-from ports.ports import *
+import gui as guiModule
+import serialports as serialPortModule
 
-
-gui = TopLevel("Pogo GUI")
+# Create Base GUI Window
+gui = guiModule.TopLevel("Pogo GUI")
 gui.setSize((800,600))
 gui.setPosition((500,300))
 
-portList = refreshPortList()
-portSelectFrame = PortSelectFrame(gui)
-portSelectFrame.grid()
-portSelectFrame.updatePortList(portList)
+# Create GUI Controller (Handles exchange between GUI and objects which need to be controlled by the GUI)
+guiController = guiModule.Controller()
+portManager = serialPortModule.PortManager(guiController)
 
-#portSelectFrame.togglePortBtn.configure(command=portSelectFrame.disablePortConfig)
+# Create GUI Frames
+gui.addFrame('portSelectFrame', guiModule.PortSelectFrame(gui, guiController))
 
-#c = tk.Canvas(gui, width=200, height=100)
-#c.config(background='black')
-#c.grid()
+
+
+### Fix this shit
+print(guiController.variables['portList'])
+portManager.refreshPortList()
+print(guiController.variables['portList'])
+
 
 gui.mainloop()

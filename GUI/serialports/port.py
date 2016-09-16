@@ -1,11 +1,9 @@
-import serial.tools.list_ports
+import serial as serial
 
-def refreshPortList():
-    portList = []
-    portInfoList = serial.tools.list_ports.comports()
-    for portInfo in portInfoList:
-        portList.append(portInfo[0])
-    return portList
+
+class Port(serial.Serial):
+    def __init__(self, title, *args, **kwargs):
+        serial.Serial.__init__(self, *args, **kwargs)
 
 def togglePort():
     # If port is closed, try to open it

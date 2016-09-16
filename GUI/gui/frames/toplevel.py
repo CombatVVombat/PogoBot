@@ -1,9 +1,12 @@
 import tkinter as tk
 
+
 class TopLevel(tk.Tk):
     def __init__(self, title, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.title(title)
+
+    frames = {}
 
     def setSize(self, size):
         self.geometry('%dx%d' % (size[0],size[1]))
@@ -14,4 +17,8 @@ class TopLevel(tk.Tk):
         self.geometry("%dx%d+%d+%d" % (size[0], size[1], position[0], position[1]))
         self.update()
 
+    def addFrame(self, title, frame):
+        self.frames[title] = frame
+        for key, frame in self.frames.items():
+            frame.grid()
 
