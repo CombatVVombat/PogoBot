@@ -6,13 +6,21 @@ class IGuiController(metaclass=ABCMeta):
     variables = {}
 
     @abstractmethod
-    def runCommand(self, name):
+    def runCommand(self, name, *args):
         pass
 
     @abstractmethod
-    def assignCommand(self, name, command):
+    def bindCommand(self, name, command):
         pass
 
     @abstractmethod
-    def assignVariable(self, name, variable):
+    def createVariable(self, name, variable):
+        pass
+
+    @abstractmethod
+    def set(self, name, variable):
+        pass
+
+    @abstractmethod
+    def get(self, name):
         pass

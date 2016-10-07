@@ -7,4 +7,3 @@ class Frame(tk.Frame):
     def __init__(self, master, IGuiController, **kwargs):
         tk.Frame.__init__(self, master=master, **kwargs)
         self.IGuiController = IGuiController
-

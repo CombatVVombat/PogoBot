@@ -5,6 +5,8 @@ class TopLevel(tk.Tk):
     def __init__(self, title, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.title(title)
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
 
     frames = {}
 
@@ -19,6 +21,10 @@ class TopLevel(tk.Tk):
 
     def addFrame(self, title, frame):
         self.frames[title] = frame
-        for key, frame in self.frames.items():
-            frame.grid()
 
+    def getFrame(self, title):
+        frame = self.frames.get(title)
+        if frame is not None:
+            return frame
+        else:
+            print("TopLevel:GetFrame: '" + title + "' not found.")
