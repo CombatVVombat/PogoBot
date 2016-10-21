@@ -2,7 +2,6 @@ import gui as guiModule
 import serialports as serialPortModule
 import graph as graphModule
 import datasource as dataSourceModule
-import random
 import fileIO as fileIOModule
 
 # Create Base GUI Window
@@ -17,12 +16,14 @@ portManager = serialPortModule.PortManager(guiController)
 
 
 # Create Graph to handle data & data ranges
-# TODO add a way to change the source of the graph's data.
-# TODO cont: maybe do not pas fileData to fileIO.  Use as argument to 'dataFromFile'
-graph = graphModule.Graph()
-fileData = dataSourceModule.DatasourceList()
-fileIO = fileIOModule.FileIO(guiController, fileData)
-graph.addChannel(fileData)
+# TODO Graph does too much stuff.  Separate out a way to break data into channels.
+# TODO Graph should be supplied with a data source for each channel.  It should not need to know how to decode data.
+graph = graphModule.Graph(guiController)
+dataFromFile = dataSourceModule.DatasourceList()
+dataFromStream = dataSourceModule.DatasourceList()  # TODO make bytestream datasource type
+graph.addDataSource(dataFromFile)
+graph.addDataSource(dataFromStream)
+fileIO = fileIOModule.FileIO(guiController, dataFromFile)
 
 
 # Create GUI Frames
@@ -31,6 +32,7 @@ gui.addFrame('graphFrame', guiModule.GraphFrame(gui, guiController, graph))
 gui.addFrame('fileLoadingFrame', guiModule.FileLoadingFrame(gui, guiController))
 gui.addFrame('encodingFrame', guiModule.EncodingFrame(gui, guiController))
 gui.addFrame('channelFrame', guiModule.ChannelFrame(gui, guiController))
+
 
 # Layout of GUI Frames
 gui.getFrame('graphFrame').grid(row=0, column=0, sticky="N,S,E,W", columnspan=4)

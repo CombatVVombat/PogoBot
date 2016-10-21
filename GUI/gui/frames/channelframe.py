@@ -17,15 +17,21 @@ class ChannelFrame(myFrame.Frame):
         self.signedLabel = tk.Label(self, text="Signed")
         self.signedLabel.grid(row=0, column=2, sticky="E,W")
         self.numBytesSpinners = []
+        self.enableCheckVars = []
         self.enableCheckBoxes = []
         self.signedCheckBoxes = []
         for i in range(0,8):
             label = "Channel " + str(i+1)
-            self.enableCheckBoxes.append(tk.Checkbutton(self, text=label, width=10))
+            self.enableCheckVars.append(tk.IntVar())
+            self.enableCheckBoxes.append(tk.Checkbutton(self, text=label, width=10, variable=self.enableCheckVars[-1]))
             self.numBytesSpinners.append(tk.Spinbox(self, values=[1,2,3,4,5,6,7,8], width=4))
             self.signedCheckBoxes.append(tk.Checkbutton(self, width=4))
             self.enableCheckBoxes[-1].grid(row=i+1, column=0)
             self.numBytesSpinners[-1].grid(row=i+1, column=1, sticky="N,S")
             self.signedCheckBoxes[-1].grid(row=i+1, column=2, sticky="N,S,E,W")
-
+            self.enableCheckBoxes[-1].configure(command=
+                                                lambda i=i, s=self.enableCheckVars[-1]:
+                                                self.IGuiController.runCommand('toggleChannel', i, s.get()))
         self.enableCheckBoxes[0].select()
+        self.IGuiController.runCommand('toggleChannel', 0, 1)
+
