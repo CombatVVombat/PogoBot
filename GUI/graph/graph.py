@@ -1,80 +1,90 @@
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
+from .channel import Channel
+import random
 matplotlib.use("TkAgg")
 
 
 class Graph():
     figure = None
-    datasets = []
-    lines = []
-    span = 0
+    channels = []
+    span = 1
 
     def __init__(self, IGuiController):
+        # Setup Plotting Figure & Subplot
         plt.ion
         self.figure = Figure(dpi=100)
         self.figure.set_size_inches(7, 3.5)
         self.subplot = self.figure.add_subplot(111)
-        self.subplot.set_xlim([0,100])
-        self.subplot.set_ylim([-128,127])
-        self.IDataSources = []
-        self.activeDataSource = 0
+        self.setXLimits(0,100)
+        self.setYLimits(-128,127)
+
+        # Create channels.  Channels handle their own lines (so they need the subplot)
+        colors = ['blue', 'green', 'red', 'cyan', 'magenta', 'orange', 'black', 'chartreuse']
+        for n in range(0,8):
+            self.channels.append(Channel(self.subplot, colors[n]))
+
         self.IGuiController = IGuiController
-        self.IGuiController.bindCommand('setDataSource', self.setDataSource)
-        self.IGuiController.bindCommand('toggleChannel', self.toggleChannel)
-        self.channelState = [0, 0, 0, 0, 0, 0, 0, 0]
-        self.lines = self.subplot.plot([],[],'r',[],[],'g',[],[],'b',[],[],'c',[],[],'k',[],[],'m',[],[],'y',[],[],'g')
+        self.IGuiController.bindCommand('setChannelState', self.setChannelState)
+
+        ### TEMPORARY ###
+        self.tempData = list(range(-10, 10))
+        for n, channel in enumerate(self.channels):
+            channel.setData(self.tempData)
+        #################
 
     def update(self):
-        self.span = self.xSpan()
-        for n, line in enumerate(self.lines):
-            if self.channelState[n] == 1:
-                line.set_xdata(range(-10,10))
-                line.set_ydata(range(-10,10))
-            else:
-                line.set_xdata(0)
-                line.set_ydata(0)
+        ### Temporary ####
+        self.tempData.append(random.randrange(-10,10))
 
-    def toggleChannel(self, channel, state):
-        print('Graph::toggleChannel ' + str(channel) + ' ' + str(state))
-        self.channelState[channel] = state
+        self.span = self.updateSpan()
+        for channel in self.channels:
+            channel.update()
 
-    def addDataSource(self, IDataSource):
-        self.IDataSources.append(IDataSource)
-
-    def setDataSource(self, index):
-        if index >= 0 and index < len(self.IDataSources):
-            print("Graph::setDataSource: " + str(index))
-            self.activeDataSource = index
-            self.datasets.clear()
-            self.datasets.append(self.IDataSources[index])
+    def setChannelState(self, channel, state):
+        #print('Graph::toggleChannel ' + str(channel) + ' ' + str(state))
+        if 0 <= channel < len(self.channels):
+            self.channels[channel].active = state
         else:
-            print("Graph::setDataSource index out of bounds.")
+            print("Graph::setChannelState channel doesn't exist.")
 
-    def xSpan(self):
-        span = 0
-        for dataset in self.datasets:
-            x = dataset.len()
-            if x > span:
-                span = x
-        return span-1
+    def updateSpan(self):
+        span = self.xMax()
+        return span
 
-    def extents(self):
-        xLimits = [0,0]
-        yLimits = [0,0]
-        for dataset in self.datasets:
-            x = dataset.len()
-            if x > 0:
-                y = max(dataset.get())
-            else:
-                y = 0
-            if x > xLimits[1]:
-                xLimits[1] = x
-            if y > yLimits[1]:
-                yLimits[1] = y
-            if y < yLimits[0]:
-                yLimits[0] = y
-        return [xLimits[0], xLimits[1]-1, yLimits[0], yLimits[1]]
+    def xMin(self):
+        xMin = 0
+        for channel in self.channels:
+            x = channel.xMin()
+            if x < xMin:
+                xMin = x
+        return xMin
+
+    def xMax(self):
+        xMax = 1
+        for channel in self.channels:
+            if channel.active:
+                x = channel.xMax()
+                if x > xMax:
+                    xMax = x
+        return xMax
+
+    def yMin(self):
+        yMin = 0
+        for channel in self.channels:
+            y = channel.yMin()
+            if y < yMin:
+                yMin = y
+        return yMin
+
+    def yMax(self):
+        yMax = 1
+        for channel in self.channels:
+            y = channel.yMax()
+            if y > yMax:
+                yMax = y
+        return yMax
 
     def setXLimits(self, min, max):
         self.subplot.set_xlim(min, max)

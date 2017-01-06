@@ -21,7 +21,7 @@ class GraphFrame(myFrame.Frame):
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=tk.YES)
 
         self.viewLocked = True
-        self.viewTarget = self.graph.extents()[1]
+        self.viewTarget = self.graph.xMax()
         self.viewOffset = 1
         self.viewWidth = 10
 
@@ -39,14 +39,13 @@ class GraphFrame(myFrame.Frame):
         self.xScrollbar.set(str(min/span), str(max/span))
 
     def update(self):
-        self.graph.update()
         if self.viewLocked:
-            self.viewTarget = self.graph.extents()[1]
+            self.viewTarget = self.graph.xMax()
         view = self.calcView(self.viewTarget, self.viewOffset, self.viewWidth)
         self.setScrollbar(view[0], view[1], self.graph.span)
         self.graph.setXLimits(view[0], view[1])
+        self.graph.setYLimits(self.graph.yMin()*1.2, self.graph.yMax()*1.2)
         self.canvas.draw()
-        self.after(100, self.update)
 
     def calcView(self, target, offset, width):
         viewMax = int(target * offset)
@@ -64,11 +63,18 @@ class GraphFrame(myFrame.Frame):
             self.viewOffset = 0
 
     def setViewWidth(self, event):
-        if event.delta > 0:
-            self.viewWidth -= int(event.delta * 0.0001 * self.graph.span)
-        else:
-            self.viewWidth -= int(event.delta * 0.0001 * self.graph.span)
+        scrollDelta = event.delta * 0.0002 * self.graph.span
+        if -1 < scrollDelta < 1:
+            scrollDelta = scrollDelta / abs(scrollDelta)
+
+        self.viewWidth -= int(scrollDelta)
+
         if self.viewWidth < 10:
             self.viewWidth = 10
-        if self.viewWidth > self.graph.span:
-            self.viewWidth = self.graph.span
+        if self.viewWidth > self.graph.span-1:
+            self.viewWidth = self.graph.span-1
+
+
+
+
+
