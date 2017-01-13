@@ -3,26 +3,25 @@ import serial.tools.list_ports
 
 
 class PortManager():
-    port = Port()
-    portList = []
-    IGuiController = None
-
     def __init__(self, IGuiController):
+        self.port = Port()
         self.IGuiController = IGuiController
         self.IGuiController.bindCommand('refreshPortList', self.refreshPortList)
         self.IGuiController.bindCommand('setSelectedPort', self.setSelectedPort)
-        self.IGuiController.createVariable('portList', self.portList)
+        self.IGuiController.createVariable('portList')
         self.IGuiController.bindCommand('togglePort', self.togglePort)
 
     def setSelectedPort(self, selectedPort):
-        self.port.port = selectedPort
+        self.port.port = selectedPort   # sets the port to try to open, e.g. "COM1"
+                                        # weirdly the pyserial "port" object uses a member "port"
+                                        # to refer to this name, resulting in the strange port.port
 
     def refreshPortList(self):
         portInfoList = serial.tools.list_ports.comports()
-        self.portList = []
+        portList = []
         for portInfo in portInfoList:
-            self.portList.append(portInfo[0])
-            self.IGuiController.set('portList', self.portList)
+            portList.append(portInfo[0])
+            self.IGuiController.set('portList', portList)
 
     def togglePort(self):
         if not self.port.is_open:

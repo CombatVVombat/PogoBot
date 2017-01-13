@@ -44,7 +44,7 @@ class PortSelectFrame(myFrame.Frame):
             labelText = label.cget("text")
             self.portConfigCombos[labelText] = myComboBox.Combobox(self.portSettingsFrame)
             self.portConfigCombos[labelText].grid(row=n, column=1, sticky="N,S")
-            self.IGuiController.createVariable(labelText, 0)
+            self.IGuiController.createVariable(labelText)
             self.portConfigCombos[labelText].onSelect(lambda x, y=labelText:self.IGuiController.set(y, self.portConfigCombos[y].get()))
 
         # Set combo box default values & default current value

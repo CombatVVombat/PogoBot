@@ -21,10 +21,10 @@ class Controller(IGuiController):
             print("GUIController " + self.id + ": Command named: '" + name + "' already bound.  Rebinding...")
         self.commands[name] = command
 
-    def createVariable(self, name, variable):
+    def createVariable(self, name):
         if self.variables.get(name) is not None:
             print("GUIController " + self.id + ": Variable named: '" + name + "' already bound.  Rebinding...")
-        self.variables[name] = variable
+        self.variables[name] = ''
         if self.debugPrint:
             print("GUIController " + self.id + ": variable '" + name + "' created.")
 

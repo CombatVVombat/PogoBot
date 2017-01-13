@@ -6,6 +6,7 @@ import gui.frame as myFrame
 class FileLoadingFrame(myFrame.Frame):
     def __init__(self, master, IGuiController, **kwargs):
         myFrame.Frame.__init__(self, master, IGuiController, **kwargs)
+        self.filename = None
         self.config(background='grey')
         self.config(relief=tk.GROOVE, borderwidth=5)
         self.columnconfigure(0, weight=0)

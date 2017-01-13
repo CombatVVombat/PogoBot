@@ -14,10 +14,10 @@ class Channel:
         self.dataHandle = dataHandle
 
     def update(self):
-        if self.active:
-            xdata = list(range(0, len(self.dataHandle)))
-            self.line.set_xdata(xdata)
-            self.line.set_ydata(self.dataHandle)
+        if self.active and self.dataHandle:
+                xdata = list(range(0, len(self.dataHandle)))
+                self.line.set_xdata(xdata)
+                self.line.set_ydata(self.dataHandle.get())
         else:
             self.line.set_xdata(0)
             self.line.set_ydata(0)
@@ -26,12 +26,21 @@ class Channel:
         return 0
 
     def xMax(self):
-        return len(self.dataHandle)
+        if self.dataHandle:
+            return len(self.dataHandle)
+        else:
+            return 0
 
     def yMin(self):
-        return min(self.dataHandle)
+        if self.dataHandle:
+            return min(self.dataHandle)
+        else:
+            return 0
 
     def yMax(self):
-        return max(self.dataHandle)
+        if self.dataHandle:
+            return max(self.dataHandle)
+        else:
+            return 0
 
 

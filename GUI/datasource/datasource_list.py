@@ -2,10 +2,15 @@ from datasource.idatasource import IDataSource as IDataSource
 
 
 class DatasourceList(IDataSource):
-    data = []
 
     def __init__(self):
-        pass
+        self.data = []
+
+    def __iter__(self):
+        return iter(self.data)
+
+    def __len__(self):
+        return len(self.data)
 
     def get(self):
         return self.data

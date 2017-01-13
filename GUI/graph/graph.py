@@ -28,26 +28,22 @@ class Graph():
         self.IGuiController = IGuiController
         self.IGuiController.bindCommand('setChannelState', self.setChannelState)
 
-        ### TEMPORARY ###
-        self.tempData = list(range(-10, 10))
-        for n, channel in enumerate(self.channels):
-            channel.setData(self.tempData)
-        #################
-
     def update(self):
-        ### Temporary ####
-        self.tempData.append(random.randrange(-10,10))
-
         self.span = self.updateSpan()
         for channel in self.channels:
             channel.update()
 
     def setChannelState(self, channel, state):
-        #print('Graph::toggleChannel ' + str(channel) + ' ' + str(state))
         if 0 <= channel < len(self.channels):
             self.channels[channel].active = state
         else:
             print("Graph::setChannelState channel doesn't exist.")
+
+    def setChannelData(self, channel, IDataSource):
+        if 0 <= channel < len(self.channels):
+            self.channels[channel].setData(IDataSource)
+        else:
+            print("Graph::setChannelData channel doesn't exist.")
 
     def updateSpan(self):
         span = self.xMax()
