@@ -1,8 +1,9 @@
 class FileIO():
-    def __init__(self, IGuiController):
+    def __init__(self, IGuiController, IDataSource):
         self.data = bytearray()
         self.IGuiController = IGuiController
         self.IGuiController.bindCommand('openfile', self.dataFromFile)
+        self.dataOutputHandle = IDataSource
 
     def dataFromFile(self, filename):
         self.data = bytearray()
@@ -14,6 +15,8 @@ class FileIO():
                 print("FoleIO::dataFromFile exception IOError occurred.")
         else:
             print("FileIO::dataFromFile no filename provided")
+        for x in self.data:
+            self.dataOutputHandle.append(x)
         return self.data
 
 

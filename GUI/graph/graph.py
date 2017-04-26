@@ -39,7 +39,7 @@ class Graph():
         else:
             print("Graph::setChannelState channel doesn't exist.")
 
-    def setChannelData(self, channel, IDataSource):
+    def setChannelDataHandle(self, channel, IDataSource):
         if 0 <= channel < len(self.channels):
             self.channels[channel].setData(IDataSource)
         else:

@@ -10,6 +10,14 @@ gui = guiModule.TopLevel("Pogo GUI")
 gui.setSize((800,600))
 gui.setPosition((500,300))
 
+# Data containers
+rawData = dataSourceModule.DatasourceList()    # Data that still needs to be formatted.
+dataFromFile = []  # Data loaded from text file
+plotData = []   # Data that has been formatted and ready for plotting.
+for n in range(0,8):
+    plotData.append(dataSourceModule.DatasourceList())
+
+
 
 # Create GUI Controller (Handles exchange between GUI and objects which need to be controlled by the GUI)
 guiController = guiModule.Controller()
@@ -23,12 +31,10 @@ packetizer = encodingModule.Packetizer(guiController)
 
 # Create Graph to handle data & data ranges
 graph = graphModule.Graph(guiController)
-plotDataChannel = []
 for n in range(0,8):
-    plotDataChannel.append(dataSourceModule.DatasourceList())
-    graph.setChannelData(n, plotDataChannel[n])
+    graph.setChannelDataHandle(n, plotData[n])
 
-fileIO = fileIOModule.FileIO(guiController)
+fileIO = fileIOModule.FileIO(guiController, dataFromFile)
 #Sample Capture.txt = 4bytes, 4bytes, 2 bytes, 1 byte, 0 delimeter cobs encoded
 
 
@@ -51,6 +57,7 @@ gui.getFrame('channelFrame').grid(row=1, column=3, sticky="N,S,W", columnspan=1)
 
 # Define repeated mainloop task
 def task():
+    packets = packetizer.packetize(0, 11, dataFromFile)
     updateGraphFrame()  # update the graph's canvas, view, & sliders
     graph.update()      # update the graph itself
     gui.after(10, task)

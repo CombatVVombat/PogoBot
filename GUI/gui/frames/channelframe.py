@@ -34,6 +34,12 @@ class ChannelFrame(myFrame.Frame):
             self.enableCheckBoxes[-1].configure(command=
                                                 lambda i=i, s=self.enableCheckVars[-1]:
                                                 self.IGuiController.runCommand('setChannelState', i, s.get()))
+            SpinnerChannel = "ChanBytes" + str(i)
+            self.IGuiController.createVariable(SpinnerChannel)
+            self.numBytesSpinners[-1].configure(command=
+                                                lambda s=self.numBytesSpinners[-1]:
+                                                self.IGuiController.set(SpinnerChannel, s.get()))
+
         self.enableCheckBoxes[0].select()
         self.IGuiController.runCommand('setChannelState', 0, 1)
 
